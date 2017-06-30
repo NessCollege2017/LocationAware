@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "113703065613",
+    "firebase_url": "https://locationaware-dd023.firebaseio.com",
+    "project_id": "locationaware-dd023",
+    "storage_bucket": "locationaware-dd023.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113703065613:android:9afe4728ab4a14c6",
+        "android_client_info": {
+          "package_name": "ness.edu.locationaware"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "113703065613-i2gvn5ene0mec2oke4gf9scm69mr075m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ness.edu.locationaware",
+            "certificate_hash": "2c57560112b410112988b2abc291dd25f1889c0b"
+          }
+        },
+        {
+          "client_id": "113703065613-c5k0a5si2pon0a90eoupoinssif61ofs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSeCReJ4rwQcJskc4mgyh-nn978oLbv00"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "113703065613-c5k0a5si2pon0a90eoupoinssif61ofs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
