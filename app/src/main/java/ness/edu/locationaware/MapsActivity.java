@@ -1,10 +1,15 @@
 package ness.edu.locationaware;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,9 +20,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "Ness";
+    private static final int RC_LOCATION = 10;
     private GoogleMap mMap;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -37,12 +43,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //in the dynamic approach -> instantiate the fragment
         SupportMapFragment mapFragment = new SupportMapFragment();
 
-        //begin a transaction
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.frame1, mapFragment).
                 commit();
 
         mapFragment.getMapAsync(this);
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -51,7 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                   initWithUser();
+                    initWithUser();
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:No User");
@@ -68,9 +74,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
+
     private void initWithUser() {
 
     }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -95,10 +103,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        addMyLocation();
+        addNessMarker();
+    }
+    private boolean checkLocationPermission(){
+        String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+        //If No Permission-> Request the permission and return false.
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            ActivityCompat.requestPermissions(this, permissions, RC_LOCATION);
+            return false;
+        }
+        return true;//return true if we have a permission
+    }
+    private void addNessMarker(){
+        //latitude, longitude
+        LatLng ness = new LatLng(32.1143876, 34.8397601);
+        mMap.addMarker(new MarkerOptions().position(ness));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ness, 17));
+    }
+    private void addMyLocation(){
+        if (!checkLocationPermission())return;
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+                Location myLocation = mMap.getMyLocation();
+                Toast.makeText(MapsActivity.this, "" + myLocation.getLatitude(), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            //noinspection MissingPermission
+           addMyLocation();
+        }
     }
 }
