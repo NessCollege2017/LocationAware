@@ -29,7 +29,7 @@ public class MapsActivity extends AppCompatActivity{
 
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.frame1, mapFragment, "1").
-                replace(R.id.frame2, new LocationFragment(), "2").
+                replace(R.id.frame2, new FencingFragment(), "2").
                 commit();
 
         mAuth = FirebaseAuth.getInstance();
